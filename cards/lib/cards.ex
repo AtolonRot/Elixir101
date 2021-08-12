@@ -38,10 +38,23 @@ defmodule Cards do
     |> Cards.deal(hand_size)
   end
 
+  @doc """
+    Rearrange the pack of cards
+  """
   def shuffle(deck) do
     Enum.shuffle(deck)
   end
 
+  @doc """
+    Verifies if the card exists in the deck
+
+  ## Examples
+      iex> deck = Cards.create_deck
+      ["1 of Clubs", "2 of Clubs", "3 of Clubs", "1 of Hearts", "2 of Hearts",
+       "3 of Hearts", "1 of Diamonds", "2 of Diamonds", "3 of Diamonds"]
+      iex> Cards.contains?(deck, "2 of Hearts")
+      true
+  """
   def contains?(deck, hand) do
     Enum.member?(deck, hand)
   end
@@ -51,11 +64,15 @@ defmodule Cards do
     The `hand_size`argument indicated how many cards should be in the hand.
 
   ## Examples
-      iex > deck = Cards.create_deck
-      iex > {hand, deck} = Cards.deal(deck, 1)
-      iex > hand
-      ["Two of Hearts"]
-
+      iex> deck = Cards.create_deck
+      ["1 of Clubs", "2 of Clubs", "3 of Clubs", "1 of Hearts", "2 of Hearts",
+       "3 of Hearts", "1 of Diamonds", "2 of Diamonds", "3 of Diamonds"]
+      iex> {hand, deck} = Cards.deal(deck, 1)
+      {["1 of Clubs"],
+       ["2 of Clubs", "3 of Clubs", "1 of Hearts", "2 of Hearts", "3 of Hearts",
+        "1 of Diamonds", "2 of Diamonds", "3 of Diamonds"]}
+      iex> hand
+      ["1 of Clubs"]
   """
   def deal(deck, hand_size) do
     Enum.split(deck, hand_size)
