@@ -4,6 +4,7 @@ defmodule Identicon do
     |> hash_input()
     |> pick_color()
     |> build_grid()
+    |> filter_odd_squares()
   end
 
   def hash_input(input) do
@@ -33,16 +34,35 @@ defmodule Identicon do
   # ***** Build Grid with Pattern Matching *****
   # Chunk will take a list of numbers and then it will create a list of lists
   def build_grid(%Identicon.Image{hex: hex} = image) do
-    hex
-    |> Enum.chunk_every(3)
+    # & means reference to a function. /1 the number of arguments
+    grid =
+      hex
+      # Deprecated: Enum.chunk(3)
+      |> Enum.chunk_every(3, 3, :discard)
+      |> Enum.map(&mirror_row/1)
+      |> List.flatten()
+      # Creates a tuple for every element {number, INDEX}
+      |> Enum.with_index(0)
+
+    %Identicon.Image{image | grid: grid}
   end
 
   def mirror_row(row) do
     # [2, 200, 3,]
     [a, b | _tail] = row
- 
+
     # * Mirror
     # [2, 200, 3, 200, 2]
     row ++ [b, a]
+  end
+
+  def filter_odd_squares(%Identicon.Image{grid: grid} = image) do
+    grid =
+      Enum.filter(grid, fn {code, _index} ->
+        # In Java: 20 % 9 = 2
+        rem(code, 2) == 0 # Return true/false whether is odd or not
+      end)
+
+    %Identicon.Image{image | grid: grid}
   end
 end
