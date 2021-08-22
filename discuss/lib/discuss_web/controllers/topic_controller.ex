@@ -1,13 +1,19 @@
 defmodule DiscussWeb.TopicController do
   use DiscussWeb, :controller
   alias Discuss.Topic
+  alias Discuss.Repo
 
-  def new(conn, params) do
-    changeset = Topic.changeset(%Topic{}, %{})
-    render(conn, "new.html", changeset: changeset)
+  def new(conn, _params) do
+    render(conn, "new.html", changeset: Topic.changeset(%Topic{}, %{}))
   end
 
-  def create(conn, params) do
-    IO.inspect(params)
+  # Pattern matching to get only "topic" from params
+  def create(conn, %{"topic" => topic}) do
+    changeset = Topic.changeset(%Topic{}, topic)
+
+    case Repo.insert(changeset) do
+      {:ok, post} -> IO.inspect(post)
+      {:error, changeset} -> render(conn, "new.html", changeset: changeset)
+    end
   end
 end
