@@ -26,7 +26,7 @@ config :discuss, DiscussWeb.Endpoint,
       "--mode",
       "development",
       "--watch",
-      "--watch-options-stdin",
+      "--watch-options",
       cd: Path.expand("../assets", __DIR__)
     ]
   ]
